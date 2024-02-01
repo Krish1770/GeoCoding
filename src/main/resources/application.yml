@@ -1,15 +1,40 @@
 
-spring :
+spring:
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
     hibernate:
       ddl-auto: update
-      show-sql: true
-  #  config:
-  #    import: optional:bashrc:.env
+
   datasource:
     url: jdbc:postgresql://localhost:5432/sampleDB
     username: postgres
     password: root
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/GeoCoding
+#spring :
+#  jpa:
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+#    hibernate:
+
+#      ddl-auto: update
+  #  config:
+  #    import: optional:bashrc:.env
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/sampleDB
+#    username: postgres
+#    password: root
+
+
+geocoding: geocoding
+add: /add
+find: /find
+shop: shop
+login: login
+subscription: subscription
+plan: plan
+company: company

@@ -3,17 +3,15 @@ package com.example.geoCoding.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class ResponseDto {
-    private String message;
+public class PayloadAssignDto {
 
+    private String companyId;
 
-    private Object data;
+    private String subscriptionId;
 
-    private HttpStatus httpStatus;
+    private String companyName;
 }
