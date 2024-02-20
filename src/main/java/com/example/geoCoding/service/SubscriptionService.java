@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SubscriptionService {
     Subscriptions add(AddSubscriptionDto addSubscriptionDto);
+
+    Boolean isSubscriptionValid(String subscriptionId);
 }

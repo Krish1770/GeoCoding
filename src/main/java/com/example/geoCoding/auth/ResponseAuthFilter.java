@@ -1,117 +1,151 @@
 package com.example.geoCoding.auth;
 
 import com.example.geoCoding.DTO.LogDto;
-import com.example.geoCoding.DTO.PayloadDto;
-import com.example.geoCoding.model.ResponseLog;
+import com.example.geoCoding.TemplateClass.DataDecryption;
+import com.example.geoCoding.exceptionHandling.BadRequestException;
 import com.example.geoCoding.service.ResponseLogService;
-import com.nimbusds.jose.shaded.gson.Gson;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.json.JSONParser;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 
 
-@Configuration
+@Component
 public class ResponseAuthFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(LoggerFactory.class);
 
+//    @Value("${PRIVATE_KEY}")
+//    private String privateString;
 
+    @Autowired
+    private DataDecryption dataDecryption;
     @Autowired
     private ResponseLogService responseLogService;
 
     @Autowired
     private JwtService jwtService;
+
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request)
-    {
-        String path=request.getRequestURI();
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
         System.out.println(path);
-        return "/company/login".equals(path);
+        ArrayList<String>arr=new ArrayList<>();
+       arr.add("/company/login");
+        arr.add("/subscription/add");
+        arr.add("/plan/add");
+        arr.add("/shop/add");
+//        arr.add("/shop/find");
+        return arr.contains(path);
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-
-
+        ArrayList<String> arrayList=new ArrayList<>();
+        arrayList.add("/shop/find");
+        System.out.println("hi");
+        String subscriptionId="";
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-String val=request.getHeader("Authorization");
+        String val = request.getHeader("Authorization");
+        byte[] decrypted;
+        if(!arrayList.contains(request.getRequestURI())) {
+            String cuttedString = val.substring(7);
+            Claims claims = jwtService.extractAllClaims(cuttedString);
 
-        System.out.println("anssssss");
+             subscriptionId = claims.get("subscriptionId").toString();
+        }
 
-        String cuttedString=val.substring(7);
-//        JsonParser jsonParser= JsonParserFactory.getJsonParser();
-//        Map<String,?> tokenData=jsonParser.parseMap(.d);
+        else {
+              String decryptedString= dataDecryption.decryption(request);
+//            String apiKeyString;
+//            byte[] apiKey;
+//            KeyFactory keyFactory = null;
+//
+//            try {
+//                keyFactory = KeyFactory.getInstance("RSA");
+//                apiKeyString = (request.getHeader("Authorization"));
+//                apiKey = Base64.getDecoder().decode(apiKeyString.getBytes(StandardCharsets.ISO_8859_1));
+//                byte[] privateData = Base64.getDecoder().decode((privateString));
+//                PKCS8EncodedKeySpec spec2 = new PKCS8EncodedKeySpec(privateData);
+//                PrivateKey privateKey = null;
+//                privateKey = keyFactory.generatePrivate(spec2);
+////                  keyFactory = KeyFactory.getInstance("RSA");
+//                Cipher cipher = null;
+//                cipher = Cipher.getInstance("RSA");
+//                cipher.init(Cipher.DECRYPT_MODE, privateKey);
+////              cipher.update(apiKey);
+//
+//                decrypted = cipher.doFinal(apiKey);
+//                System.out.println("decrypted: " + new String(decrypted));
+////                filterChain.doFilter(request, response);
+//
+//            } catch (IllegalBlockSizeException | NoSuchPaddingException | InvalidKeyException
+//                     | NoSuchAlgorithmException|InvalidKeySpecException | BadPaddingException e) {
+//                throw new BadRequestException(e.toString());
+//            }
+//
+//            System.out.println("decrypted: " + new String(decrypted));
+//
+//                String ans = new String(decrypted);
+//         ans=ans.substring(63);
 
-//        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor("eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwNjUyNDE4MiwiaWF0IjoxNzA2NTI0MTgyfQJfhY1a3tmN3UT99ORZw8ZVIRjMHCt2oNXIgH6PbKY".getBytes()))
-//                .build().
-//                parseClaimsJws(cuttedString);
-//        System.out.println(claimsJws.getBody());
-//        System.out.println(claimsJws.getBody().get("subscriptionId"));
-//        Base64.Decoder decoder = Base64.getUrlDecoder();
-// String[] chunks=cuttedString.split("\\.");
-//        String header = new String(decoder.decode(chunks[0]));
-//        String payload = new String(decoder.decode(chunks[1]));
-//        System.out.println(payload);
-//        Gson gson = new Gson();
-//        PayloadDto payloadDto=gson.fromJson(payload,PayloadDto.class);
-//        System.out.println(payloadDto.getSubscriptionId());
-
-       Claims claims= jwtService.extractAllClaims(cuttedString);
-
-       String subscriptionId=claims.get("subscriptionId").toString();
-
-
+                 subscriptionId=decryptedString.replaceAll(" ","").split("_")[0];
+            }
 //        System.out.println(val.substring(7)+"qwertyuu");
-        filterChain.doFilter(requestWrapper, responseWrapper);
+            filterChain.doFilter(requestWrapper, responseWrapper);
 
-        String requestBody = getStringValue(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
-        String responseBody = getStringValue(responseWrapper.getContentAsByteArray(), responseWrapper.getCharacterEncoding());
+            String requestBody = getStringValue(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
+            String responseBody = getStringValue(responseWrapper.getContentAsByteArray(), responseWrapper.getCharacterEncoding());
 //
-        LogDto logDto=new LogDto();
+            LogDto logDto = new LogDto();
 //
 //
-      logDto.setMethod(request.getMethod());
-        logDto .setRequestURI(request.getRequestURI());
-        logDto.setResponseBody(responseBody);
-        logDto.setRequestBody(requestBody);
-//        logDto.setSubscriptionId(payloadDto.getSubscriptionId());
-        logDto.setStatus(response.getStatus());
-//
-        responseLogService.add(logDto,subscriptionId);
+            System.out.println("subscriptionId" + subscriptionId);
+            logDto.setMethod(request.getMethod());
+            logDto.setRequestURI(request.getRequestURI());
+            logDto.setResponseBody(responseBody);
+            logDto.setRequestBody(requestBody);
+            logDto.setStatus(response.getStatus());
+
+            responseLogService.add(logDto, subscriptionId);
 
 //        System.out.println(responseLog);
-
 
 
 //        logger.info(
 //                "FINISHED PROCESSING : METHOD={}; REQUESTURI={}; REQUEST PAYLOAD={}; RESPONSE CODE={}; RESPONSE={}",
 //                request.getMethod(), request.getRequestURI(), requestBody, response.getStatus(), responseBody
 //                );
-        responseWrapper.copyBodyToResponse();
+            responseWrapper.copyBodyToResponse();
 
 
     }

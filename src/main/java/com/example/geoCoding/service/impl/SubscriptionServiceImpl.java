@@ -56,4 +56,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
          subscriptions.setExpiredAt(calendar.getTime());
          return subscriptionRepository.save(subscriptions);
     }
+
+    @Override
+    public Boolean isSubscriptionValid(String subscriptionId) {
+        return null;
+    }
 }

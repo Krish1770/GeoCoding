@@ -9,5 +9,7 @@ public interface ResponseLogService {
 
      ResponseLog add(LogDto logDto,String subscriptionId);
 
+     Boolean isSubscriptionValid(String subscription);
+
 
 }

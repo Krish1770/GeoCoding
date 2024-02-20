@@ -4,7 +4,6 @@ package com.example.geoCoding.service.impl;
 import com.example.geoCoding.DTO.AddCompanyDto;
 import com.example.geoCoding.DTO.LoginDto;
 import com.example.geoCoding.DTO.PayloadAssignDto;
-import com.example.geoCoding.DTO.ResponseDto;
 import com.example.geoCoding.auth.JwtService;
 import com.example.geoCoding.exceptionHandling.BadRequestException;
 import com.example.geoCoding.model.Company;
@@ -15,9 +14,6 @@ import com.example.geoCoding.repository.Service.SubscriptionRepoService;
 import com.example.geoCoding.service.CompanyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,32 +22,32 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
 
     @Autowired
     ModelMapper modelMapper;
-
     @Autowired
-   private SubscriptionRepoService subscriptionRepoService;
+    JwtService jwtService;
     @Autowired
-    JwtService jwtService;    @Autowired
+    private SubscriptionRepoService subscriptionRepoService;
+    @Autowired
     private CompanyRepoService companyRepoService;
     @Autowired
     private CompanyRepository companyRepository;
+
     @Override
     public List<Company> addCompany(AddCompanyDto addCompanyDto) {
-           Company company=new Company();
-            modelMapper.map(addCompanyDto,company);
-            companyRepository.save(company);
-              return   companyRepository.findAll();
+        Company company = new Company();
+        modelMapper.map(addCompanyDto, company);
+        companyRepository.save(company);
+        return companyRepository.findAll();
     }
 
     @Override
     public UserDetails loadByCompanyName(String companyName) {
-        Optional<Company> company=companyRepoService.findByCompanyName(companyName);
+        Optional<Company> company = companyRepoService.findByCompanyName(companyName);
 
         return modelMapper.map(company, UserDetails.class);
     }
@@ -59,22 +55,21 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public String login(LoginDto loginDto) {
 
-        Optional<Company> company=companyRepoService.findByCompanyName(loginDto.getCompanyName());
+        Optional<Company> company = companyRepoService.findByCompanyName(loginDto.getCompanyName());
 
-        if(company.isPresent() && company.get().getPassword().equals(loginDto.getPassword()))
-         return login(loginDto,company.get());
+        if (company.isPresent() && company.get().getPassword().equals(loginDto.getPassword()))
+            return login(loginDto, company.get());
 
         throw new BadRequestException("company mot found");
     }
 
-    public String login(LoginDto loginDto,Company company)
-    {
-        Optional<Subscriptions> subscriptions=subscriptionRepoService.findByCompanyIdAndExpiredAtGreaterThan(company.getCompanyId(),new Date());
+    public String login(LoginDto loginDto, Company company) {
+        Optional<Subscriptions> subscriptions = subscriptionRepoService.findByCompanyIdAndExpiredAtGreaterThan(company.getCompanyId(), new Date());
 
 
-        if(subscriptions.isEmpty())
+        if (subscriptions.isEmpty())
             throw new BadRequestException("subscription not present");
-        PayloadAssignDto payloadAssignDto=new PayloadAssignDto(company.getCompanyId(),subscriptions.get().getSubscriptionId(), company.getCompanyName());
+        PayloadAssignDto payloadAssignDto = new PayloadAssignDto(company.getCompanyId(), subscriptions.get().getSubscriptionId(), company.getCompanyName());
         return jwtService.generateToken(payloadAssignDto);
     }
 }
