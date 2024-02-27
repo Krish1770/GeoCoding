@@ -2,7 +2,6 @@ package com.example.geoCoding.auth;
 
 import com.example.geoCoding.DTO.LogDto;
 import com.example.geoCoding.TemplateClass.DataDecryption;
-import com.example.geoCoding.exceptionHandling.BadRequestException;
 import com.example.geoCoding.service.ResponseLogService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -12,30 +11,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 
 
 @Component
@@ -156,6 +140,5 @@ public class ResponseAuthFilter extends OncePerRequestFilter {
         return new String(contentsAsByteArray, 0, contentsAsByteArray.length, characterEncoding);
 
     }
-
 
 }
