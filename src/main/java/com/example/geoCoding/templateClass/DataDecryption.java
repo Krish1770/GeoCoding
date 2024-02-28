@@ -1,4 +1,4 @@
-package com.example.geoCoding.TemplateClass;
+package com.example.geoCoding.templateClass;
 
 
 import com.example.geoCoding.exceptionHandling.BadRequestException;

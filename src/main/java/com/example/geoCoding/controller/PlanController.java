@@ -1,6 +1,6 @@
 package com.example.geoCoding.controller;
 
-import com.example.geoCoding.DTO.AddPlanDto;
+import com.example.geoCoding.dTO.AddPlanDto;
 import com.example.geoCoding.api.PlanApi;
 import com.example.geoCoding.model.Plan;
 import com.example.geoCoding.service.PlanService;

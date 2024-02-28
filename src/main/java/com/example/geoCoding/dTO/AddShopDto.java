@@ -1,7 +1,6 @@
-package com.example.geoCoding.DTO;
+package com.example.geoCoding.dTO;
 
 
-import com.example.geoCoding.model.Address;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

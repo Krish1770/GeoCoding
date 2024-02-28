@@ -1,8 +1,8 @@
 package com.example.geoCoding.controller;
 
 
-import com.example.geoCoding.DTO.AddShopDto;
-import com.example.geoCoding.DTO.ShopDto;
+import com.example.geoCoding.dTO.AddShopDto;
+import com.example.geoCoding.dTO.ShopDto;
 import com.example.geoCoding.api.GeoCodingApi;
 import com.example.geoCoding.view.CompanyShopView;
 import com.example.geoCoding.model.Shop;

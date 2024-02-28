@@ -1,12 +1,12 @@
 package com.example.geoCoding.service.impl;
 
-import com.example.geoCoding.DTO.LogDto;
-import com.example.geoCoding.TemplateClass.RedisCounter;
+import com.example.geoCoding.dTO.LogDto;
 import com.example.geoCoding.model.ResponseLog;
 import com.example.geoCoding.repository.ResponseLogRepository;
 import com.example.geoCoding.repository.Service.ResponseLogRepoService;
 import com.example.geoCoding.repository.Service.SubscriptionViewRepoService;
 import com.example.geoCoding.service.ResponseLogService;
+import com.example.geoCoding.templateClass.RedisCounter;
 import com.example.geoCoding.view.SubscriptionView;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -39,57 +39,6 @@ public class ResponseLogServiceImpl implements ResponseLogService {
 
     @Override
     public ResponseLog add(LogDto logDto, String subscriptionId)
-//    {
-//
-//        System.out.println(logDto);
-//
-//        Optional<ResponseLog> responseLog = responseLogRepoService.findBySubscriptionId(subscriptionId);
-//        System.out.println(responseLog);
-//        ResponseLog newResponseLog = new ResponseLog();
-//        if (responseLog.isEmpty()) {
-//
-//
-//            ArrayList<LogDto> logDtoList = new ArrayList<>();
-//            logDtoList.add(logDto);
-//
-//            ArrayList<ResponseLogDto> responseLogDtoList = new ArrayList<>();
-//            responseLogDtoList.add(new ResponseLogDto(new Date(), logDtoList));
-//
-//            newResponseLog.setSubscriptionId(subscriptionId);
-//            newResponseLog.setResponseLogDtoList(responseLogDtoList);
-//
-//            responseLogRepository.save(newResponseLog);
-//            return new ResponseLog();
-//
-//
-//        } else {
-//
-//            AtomicReference<Boolean> isDatePresent = new AtomicReference<>(false);
-//            responseLog.get().getResponseLogDtoList().forEach(i ->
-//            {
-//                System.out.println(new Date()+"  date1");
-//                System.out.println(i.getDate()+"  date2");
-//
-//                if ((new Date().toString().substring(0,10)).
-//                        equals(i.getDate().toString().substring(0,10))) {
-//                    i.getLogDtoList().add(logDto);
-//                    isDatePresent.set(true);
-//                }
-//            });
-//
-//            if (isDatePresent.get().toString().equals("false")) {
-//                ArrayList<LogDto> logDtoList = new ArrayList<>();
-//                logDtoList.add(logDto);
-//                ArrayList<ResponseLogDto> responseLogDtoList = new ArrayList<>();
-//                responseLogDtoList.add(new ResponseLogDto(new Date(), logDtoList));
-//                responseLog.get().setResponseLogDtoList(responseLogDtoList);
-//            }
-//
-//            responseLogRepository.save(responseLog.get());
-//            return responseLog.get();
-//        }
-//    }
-
     {
 
         ResponseLog responseLog = new ResponseLog();
@@ -98,23 +47,21 @@ public class ResponseLogServiceImpl implements ResponseLogService {
         responseLog.setSubscriptionId(subscriptionId);
 
         responseLogRepository.save(responseLog);
-//        updatingCache(subscriptionId);
+
         return responseLog;
     }
 
-    private void updatingCache(String subscriptionId,String type) {
+    private void updatingCache(String subscriptionId, String type) {
         String date = LocalDate.now().toString();
         log.info(redisCounter.toString());
         String key = subscriptionId;
 
-        if(type.equals("requestBasis"))
-            key+=date;
+        if (type.equals("requestBasis"))
+            key += date;
         if (Boolean.TRUE.equals(redisCounter.hasKey(key))) {
-//                 System.out.println(getValue(key)+" "+key);
-//                 redisTemplate.opsForValue().increment(key);
+
             redisCounter.incrementTheValue(key);
         } else {
-//                 redisTemplate.opsForValue().set(key, Long.valueOf("1"));
             redisCounter.setValue(key, 1);
         }
     }
@@ -132,35 +79,32 @@ public class ResponseLogServiceImpl implements ResponseLogService {
     public Boolean isSubscriptionValid(String subscription) {
 
 
-            String key = subscription +"";
+        String key = subscription + "";
 
 
         Optional<SubscriptionView> subscriptions = subscriptionViewRepoService.findBySubscriptionId(subscription);
 
-        if(subscriptions.get().getPlanType().equals("requestBasis"))
-        {
-            key+= "_" + new Date().toString().substring(0, 10);
+        if (subscriptions.get().getPlanType().equals("requestBasis")) {
+            key += "_" + new Date().toString().substring(0, 10);
         }
         System.out.println(new Date().toString().substring(0, 10));
         Long count = getValue(key);
 
         System.out.println("yes i am");
         System.out.println(subscriptions.get().toString());
-        if ( subscriptions.get().getPlanType().equals("requestBasis")) {
+        if (subscriptions.get().getPlanType().equals("requestBasis")) {
             if (count >= subscriptions.get().getRequestCount())
                 return false;
 
             return true;
-        }
-        else if( subscriptions.get().getPlanType().equals("dayBasis"))
-        {
-    if(count>=subscriptions.get().getRequestCount()) {
-        return false;
-    }
-    return  false;
+        } else if (subscriptions.get().getPlanType().equals("dayBasis")) {
+            if (count >= subscriptions.get().getRequestCount()) {
+                return false;
+            }
+            return false;
         }
 
-        updatingCache(key,subscriptions.get().getPlanType());
+        updatingCache(key, subscriptions.get().getPlanType());
         return true;
     }
 }

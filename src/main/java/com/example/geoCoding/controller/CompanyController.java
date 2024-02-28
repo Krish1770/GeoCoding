@@ -1,8 +1,7 @@
 package com.example.geoCoding.controller;
 
-import com.example.geoCoding.DTO.AddCompanyDto;
-import com.example.geoCoding.DTO.LoginDto;
-import com.example.geoCoding.DTO.ResponseDto;
+import com.example.geoCoding.dTO.AddCompanyDto;
+import com.example.geoCoding.dTO.LoginDto;
 import com.example.geoCoding.api.CompanyApi;
 import com.example.geoCoding.model.Company;
 import com.example.geoCoding.service.CompanyService;

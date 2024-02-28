@@ -1,6 +1,6 @@
 package com.example.geoCoding.service.impl;
 
-import com.example.geoCoding.DTO.AddSubscriptionDto;
+import com.example.geoCoding.dTO.AddSubscriptionDto;
 import com.example.geoCoding.exceptionHandling.BadRequestException;
 import com.example.geoCoding.model.Company;
 import com.example.geoCoding.model.Plan;
@@ -8,7 +8,6 @@ import com.example.geoCoding.model.Subscriptions;
 import com.example.geoCoding.repository.CompanyRepository;
 import com.example.geoCoding.repository.PlanRepository;
 import com.example.geoCoding.repository.SubscriptionRepository;
-import com.example.geoCoding.service.PlanService;
 import com.example.geoCoding.service.SubscriptionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,31 +29,31 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private CompanyRepository companyRepository;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
     @Override
     public Subscriptions add(AddSubscriptionDto addSubscriptionDto) {
 
-        Optional<Plan>plan=planRepository.findById(addSubscriptionDto.getPlanId());
-        Optional<Company>company=companyRepository.findById(addSubscriptionDto.getCompanyId());
+        Optional<Plan> plan = planRepository.findById(addSubscriptionDto.getPlanId());
+        Optional<Company> company = companyRepository.findById(addSubscriptionDto.getCompanyId());
 
-        if(plan.isEmpty() || company.isEmpty())
-        {
-            if(plan.isPresent())
+        if (plan.isEmpty() || company.isEmpty()) {
+            if (plan.isPresent())
                 throw new BadRequestException("company id not found");
-            if(company.isPresent())
+            if (company.isPresent())
                 throw new BadRequestException("plan id not found");
 
             throw new BadRequestException("company id and plan id not found");
         }
-        Subscriptions subscriptions=new Subscriptions();
+        Subscriptions subscriptions = new Subscriptions();
         subscriptions.setPlanId(addSubscriptionDto.getPlanId());
         subscriptions.setCompanyId(addSubscriptionDto.getCompanyId());
-        Date date=new Date();
-        Calendar calendar=Calendar.getInstance();
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.DATE,Integer.parseInt(plan.get().getValidity().toString()));
+        calendar.add(Calendar.DATE, Integer.parseInt(plan.get().getValidity().toString()));
         subscriptions.setCreatedAt(date);
-         subscriptions.setExpiredAt(calendar.getTime());
-         return subscriptionRepository.save(subscriptions);
+        subscriptions.setExpiredAt(calendar.getTime());
+        return subscriptionRepository.save(subscriptions);
     }
 
     @Override

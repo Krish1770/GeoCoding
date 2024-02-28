@@ -1,8 +1,8 @@
 package com.example.geoCoding.api;
 
 
-import com.example.geoCoding.DTO.AddCompanyDto;
-import com.example.geoCoding.DTO.LoginDto;
+import com.example.geoCoding.dTO.AddCompanyDto;
+import com.example.geoCoding.dTO.LoginDto;
 import com.example.geoCoding.model.Company;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

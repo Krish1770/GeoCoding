@@ -1,8 +1,6 @@
-package com.example.geoCoding.DTO;
+package com.example.geoCoding.dTO;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jdk.jfr.DataAmount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

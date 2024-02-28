@@ -1,10 +1,9 @@
-package com.example.geoCoding.DTO;
+package com.example.geoCoding.dTO;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Data
 @AllArgsConstructor

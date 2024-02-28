@@ -1,6 +1,6 @@
 package com.example.geoCoding.exceptionHandling;
 
-import com.example.geoCoding.DTO.ResponseDto;
+import com.example.geoCoding.dTO.ResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

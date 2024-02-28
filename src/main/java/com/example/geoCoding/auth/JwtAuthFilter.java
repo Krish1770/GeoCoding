@@ -1,6 +1,6 @@
 package com.example.geoCoding.auth;
 
-import com.example.geoCoding.TemplateClass.DataDecryption;
+import com.example.geoCoding.templateClass.DataDecryption;
 import com.example.geoCoding.exceptionHandling.BadRequestException;
 import com.example.geoCoding.service.CompanyService;
 import com.example.geoCoding.service.ResponseLogService;
@@ -39,19 +39,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 //    @Value("${PRIVATE_KEY}")
 //    private String privateString;
 
-@Autowired
-private DataDecryption dataDecryption;
+    @Autowired
+    private DataDecryption dataDecryption;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 //        System.out.println( SecurityContextHolder.getContext().getAuthentication().toString()+"yesssss");
-    String apiKeyString;
-    byte[] apiKey;
+        String apiKeyString;
+        byte[] apiKey;
 
-          if(request.getRequestURI().equals("/shop/find"))
-          {
-              KeyFactory keyFactory = null;
+        if (request.getRequestURI().equals("/shop/find")) {
+            KeyFactory keyFactory = null;
 
-              String decryptedString = dataDecryption.decryption(request);
+            String decryptedString = dataDecryption.decryption(request);
 //                  keyFactory = KeyFactory.getInstance("RSA");
 //                  apiKeyString = (request.getHeader("Authorization"));
 //                  apiKey = Base64.getDecoder().decode(apiKeyString.getBytes(StandardCharsets.ISO_8859_1));
@@ -69,12 +69,12 @@ private DataDecryption dataDecryption;
 //                  System.out.println("decrypted: " + new String(decrypted));
 //
 //                  String test=new String(decrypted);
-                  if (!responseLogService.isSubscriptionValid(decryptedString.split("_")[0])) {
-                      throw new BadRequestException("request limit exceeded");
-                  }
-                  filterChain.doFilter(request, response);
-                  return;
-              }
+            if (!responseLogService.isSubscriptionValid(decryptedString.split("_")[0])) {
+                throw new BadRequestException("request limit exceeded");
+            }
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -89,7 +89,7 @@ private DataDecryption dataDecryption;
         jwt = authHeader.substring(7);
         System.out.println("Authorized");
         companyName = jwtService.extractUserName(jwt);
-//        System.out.println( SecurityContextHolder.getContext().getAuthentication().toString());
+
         if (companyName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = companyService.loadByCompanyName(companyName);
             if (jwtService.isTokenValid(jwt, companyName)) {

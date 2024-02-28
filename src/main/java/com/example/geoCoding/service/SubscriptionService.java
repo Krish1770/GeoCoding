@@ -1,6 +1,6 @@
 package com.example.geoCoding.service;
 
-import com.example.geoCoding.DTO.AddSubscriptionDto;
+import com.example.geoCoding.dTO.AddSubscriptionDto;
 import com.example.geoCoding.model.Subscriptions;
 import org.springframework.stereotype.Service;
 

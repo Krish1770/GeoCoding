@@ -1,6 +1,6 @@
 package com.example.geoCoding.controller;
 
-import com.example.geoCoding.DTO.AddSubscriptionDto;
+import com.example.geoCoding.dTO.AddSubscriptionDto;
 import com.example.geoCoding.api.SubscriptionApi;
 import com.example.geoCoding.model.Subscriptions;
 import com.example.geoCoding.service.SubscriptionService;

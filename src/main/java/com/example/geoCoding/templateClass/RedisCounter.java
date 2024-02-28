@@ -1,4 +1,4 @@
-package com.example.geoCoding.TemplateClass;
+package com.example.geoCoding.templateClass;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;

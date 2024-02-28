@@ -1,9 +1,9 @@
 package com.example.geoCoding.service.impl;
 
 
-import com.example.geoCoding.DTO.AddShopDto;
-import com.example.geoCoding.DTO.ShopDto;
 import com.example.geoCoding.auth.JwtService;
+import com.example.geoCoding.dTO.AddShopDto;
+import com.example.geoCoding.dTO.ShopDto;
 import com.example.geoCoding.exceptionHandling.BadRequestException;
 import com.example.geoCoding.model.Company;
 import com.example.geoCoding.model.Shop;
@@ -36,7 +36,6 @@ import java.util.Optional;
 public class GeoCodingServiceImpl implements GeoCodingService {
 
 
-
     @Autowired
     private JwtService jwtService;
 
@@ -57,7 +56,7 @@ public class GeoCodingServiceImpl implements GeoCodingService {
 
     @Override
     public List<CompanyShopView> getNearestShops(ShopDto shopDto) {
-//        System.out.println("password"+pass);
+
         List<CompanyShopView> shopList = companyShowRepoService.getWithInKms(shopDto.getLongitude(), shopDto.getLatitude(), shopDto.getDistance(), shopDto.getCompanyId());
         return shopList;
     }
@@ -86,8 +85,8 @@ public class GeoCodingServiceImpl implements GeoCodingService {
         Claims claims = jwtService.extractAllClaims(jwt);
         String subscriptionId = claims.get("subscriptionId").toString();
         Date expiration = claims.getExpiration();
-        byte[] message = (subscriptionId +"_"+ expiration).getBytes();
-        System.out.println(subscriptionId +"_"+ expiration+ "  12345");
+        byte[] message = (subscriptionId + "_" + expiration).getBytes();
+        System.out.println(subscriptionId + "_" + expiration + "  12345");
         KeyFactory keyFactory = null;
 
         try {
@@ -102,12 +101,10 @@ public class GeoCodingServiceImpl implements GeoCodingService {
             Cipher cipher = null;
             cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-//        cipher.update(message);
+
             byte[] cipherText = null;
             return cipherText;
-        }
-        catch (InvalidKeySpecException |NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e)
-        {
+        } catch (InvalidKeySpecException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new BadRequestException(e.toString());
         }
     }

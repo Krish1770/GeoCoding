@@ -1,4 +1,4 @@
-package com.example.geoCoding.DTO;
+package com.example.geoCoding.dTO;
 
 
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.example.geoCoding.service.impl;
 
-import com.example.geoCoding.DTO.AddPlanDto;
+import com.example.geoCoding.dTO.AddPlanDto;
 import com.example.geoCoding.model.Plan;
 import com.example.geoCoding.repository.PlanRepository;
 import com.example.geoCoding.service.PlanService;
@@ -16,10 +16,11 @@ public class PlanServiceImpl implements PlanService {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Override
     public Plan add(AddPlanDto addPlanDto) {
 
-        Plan plan=modelMapper.map(addPlanDto, Plan.class);
+        Plan plan = modelMapper.map(addPlanDto, Plan.class);
         return planRepository.save(plan);
     }
 }

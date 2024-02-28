@@ -1,6 +1,6 @@
 package com.example.geoCoding.service;
 
-import com.example.geoCoding.DTO.LogDto;
+import com.example.geoCoding.dTO.LogDto;
 import com.example.geoCoding.model.ResponseLog;
 import org.springframework.stereotype.Service;
 
